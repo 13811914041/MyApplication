@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">My Application</string>
+
+    <string name="this_is_a_text">这是一个文本</string>
+</resources>
