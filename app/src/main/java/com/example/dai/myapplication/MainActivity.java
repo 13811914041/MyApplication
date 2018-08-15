@@ -15,9 +15,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
-        //这里有冲突
-
-        //todo???
+        String str = "这里有冲突";
+        Log.e("str：",str);
 
         tvText = findViewById(R.id.tv_text);
 
