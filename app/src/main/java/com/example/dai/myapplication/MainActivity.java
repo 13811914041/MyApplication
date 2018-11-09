@@ -1,38 +1,48 @@
 package com.example.dai.myapplication;
 
-import android.support.v7.app.AppCompatActivity;
+import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.Button;
 
-public class MainActivity extends AppCompatActivity {
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
-    private TextView tvText;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+public class MainActivity extends Activity {
+
+    @BindView(R.id.btn)
+    Button btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
+    }
 
-        String str = "解决冲突";
+    @OnClick(R.id.btn)
+    public void onViewClicked() {
+        EventBus.getDefault().post(new MsgBean("标题", "内容"));
+    }
 
-        tvText = findViewById(R.id.tv_text);
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void event(String mgs) {
+        btn.append("\nmgs");
+    }
 
-        // 文本
-        tvText.setText(getString(R.string.this_is_a_text));
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void event2(MsgBean msgBean) {
+        btn.setText(msgBean.getTitle() + "\n" + msgBean.getContent());
+    }
 
-        //颜色
-        tvText.setTextColor(getResources().getColor(R.color.text_color));
-
-        //点击事件
-        tvText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //提示框
-                Toast.makeText(MainActivity.this, "点击事件", Toast.LENGTH_SHORT).show();
-            }
-        });
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }
